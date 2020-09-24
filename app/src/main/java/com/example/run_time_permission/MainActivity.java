@@ -1,22 +1,33 @@
 package com.example.run_time_permission;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int My_Permission_request_Read_Conatacts = 1;
+    Button click;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +61,30 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //permission has already been granted
         }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel chanel = new NotificationChannel("MasumBhai","MasumBhai is Genius", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(chanel);
+
+        }
+        click = (Button) findViewById(R.id.button1);
+        click.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this,"MasumBhai");
+                builder.setContentTitle("MasumBhai sent you a notification");
+                builder.setContentText("I'm very delighted for running my app in your device");
+                builder.setSmallIcon(R.drawable.masum);
+                builder.setAutoCancel(true);
+                //now is to notify
+                Context context;
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(MainActivity.this);
+                notificationManagerCompat.notify(1/*anything as id for id*/,builder.build());
+
+            }
+        });
+
     }
 
     @Override
